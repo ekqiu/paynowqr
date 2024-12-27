@@ -33,4 +33,3 @@ The above code will generate two QR codes, one for personal account and one for 
 
 ## License
 This library is released under the MIT License.
-```

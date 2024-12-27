@@ -10,7 +10,7 @@ setup(
     long_description_content_type='text/markdown',
     author="Evan Khee",
     author_email="evankhee@ymail.com",
-    url="",
+    url="https://github.com/ekqiu/paynowqr",
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
