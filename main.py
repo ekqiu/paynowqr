@@ -13,7 +13,7 @@ def main(
     identifier: Annotated[
         str,
         typer.Argument(
-            help="Mobile number for personal account or UEN number for business account."
+            help="Mobile number for personal account or UEN number for business account. For Mobile, (+65) must be included."
         ),
     ],
     name: Annotated[
@@ -21,9 +21,17 @@ def main(
     ],
     amount: Annotated[float, typer.Argument(help="Amount to be paid.")],
     description: Annotated[str, typer.Argument(help="Description of the payment.")],
+    expiry_date: Annotated[
+        int,
+        typer.Argument(help="Expiry date of the QR code. [YYYMMDD]"),
+    ] = None,
+    brand_colour: Annotated[
+        str,
+        typer.Argument(help="Colour of the PayNow logo."),
+    ] = "purple",
 ):
-    qr = PayNowQR(type, identifier, name, amount, description)
-    qr.generate_qr("paynow_qr.png")
+    qr = PayNowQR(type, identifier, name, amount, description, expiry_date, brand_colour)
+    qr.save("paynow_qr.png")
 
 
 if __name__ == "__main__":

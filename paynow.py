@@ -4,7 +4,7 @@ from PIL import Image, ImageOps
 
 
 class PayNowQR:
-    def __init__(self, recipient_type, recipient_id, recipient_name, amount, reference):
+    def __init__(self, recipient_type, recipient_id, recipient_name, amount, reference, expiry_date="", brand_colour="purple"):
         """
         Initialize the PayNowQR object.
         :param recipient_type: 'UEN' or 'MOBILE'
@@ -12,12 +12,16 @@ class PayNowQR:
         :param recipient_name: Name of recipient
         :param amount: Transaction amount
         :param reference: Reference number
+        :param exipiry_date: Expiry date of the QR code [YYYYMMDD] (optional)
+        :param brand_colour: Colour of the PayNow logo (optional)
         """
         self.recipient_type = recipient_type
         self.recipient_id = recipient_id
         self.recipient_name = recipient_name
         self.amount = "{:.2f}".format(float(amount))
         self.reference = reference
+        self.expiry_date = "{:08d}".format(int(expiry_date)) if expiry_date else "20991230"
+        self.brand_colour = brand_colour
 
     def generate_payload(self):
         """
@@ -32,6 +36,9 @@ class PayNowQR:
         reference_length = f"{len(self.reference):02}"
         recipient_name_length = f"{len(self.recipient_name):02}"
         additional_data_field_length = f"{int(reference_length) + 4:02}"
+        expiry_date_length = f"{len(self.expiry_date):02}"
+        print(f"Expiry Date Length: {expiry_date_length} {self.expiry_date}")
+        
 
         merchant_account_info = (
             "0009SG.PAYNOW"
@@ -42,6 +49,9 @@ class PayNowQR:
             + recipient_id_length
             + self.recipient_id
             + "03010"
+            + "04"
+            + expiry_date_length
+            + self.expiry_date
         )
         merchant_account_info_length = f"{len(merchant_account_info):02}"
 
@@ -71,7 +81,7 @@ class PayNowQR:
 
         return payload + "6304" + checksum
 
-    def generate_qr(self, output_file="paynow_qr.png"):
+    def save(self, output_file="paynow_qr.png"):
         """
         Generate the PayNow QR code image.
         :param output_file: Output file name
@@ -87,7 +97,7 @@ class PayNowQR:
         qr.add_data(payload)
         qr.make(fit=True)
 
-        img = qr.make_image(fill_color="purple", back_color="white").convert("RGB")
+        img = qr.make_image(fill_color=self.brand_colour, back_color="white").convert("RGB")
 
         logo = Image.open("paynow-logo.png")
         logo = logo.resize((1000, 450), Image.LANCZOS)

@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='paynowqr',
-    version='0.1',
+    name='PayNowQR',
+    version='0.2',
     packages=find_packages(),
     install_requires=["qrcode[pil]"],
-    description='A simple python library to generate PayNow QR codes',
+    description='A simple python library to generate PayNow QR codes in Singapore',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     author="Evan Khee",
