@@ -1,6 +1,7 @@
 import qrcode
-from .utils import calculate_crc
+from utils import calculate_crc
 from PIL import Image, ImageOps
+
 
 class PayNowQR:
     def __init__(self, recipient_type, recipient_id, recipient_name, amount, reference):
@@ -18,12 +19,11 @@ class PayNowQR:
         self.amount = "{:.2f}".format(float(amount))
         self.reference = reference
 
-
     def generate_payload(self):
         """
         Generate EMVCo-compliant payload for the PayNow QR code.
         """
-        
+
         recipient_type_id = "2" if self.recipient_type == "UEN" else "0"
 
         recipient_type_id_length = f"{len(recipient_type_id):02}"
@@ -35,8 +35,12 @@ class PayNowQR:
 
         merchant_account_info = (
             "0009SG.PAYNOW"
-            "01" + recipient_type_id_length + recipient_type_id
-            + "02" + recipient_id_length + self.recipient_id
+            "01"
+            + recipient_type_id_length
+            + recipient_type_id
+            + "02"
+            + recipient_id_length
+            + self.recipient_id
             + "03010"
         )
         merchant_account_info_length = f"{len(merchant_account_info):02}"
@@ -44,14 +48,24 @@ class PayNowQR:
         payload = (
             "000201"
             "010212"
-            "26" + merchant_account_info_length + merchant_account_info
+            "26"
+            + merchant_account_info_length
+            + merchant_account_info
             + "52040000"
             + "5303702"
-            + "54" + amount_length + self.amount
+            + "54"
+            + amount_length
+            + self.amount
             + "5802SG"
-            + "59" + recipient_name_length + self.recipient_name
+            + "59"
+            + recipient_name_length
+            + self.recipient_name
             + "6009Singapore"
-            + "62" + additional_data_field_length + "01" + reference_length + self.reference
+            + "62"
+            + additional_data_field_length
+            + "01"
+            + reference_length
+            + self.reference
         )
         checksum = calculate_crc(payload + "6304")
 
@@ -73,13 +87,15 @@ class PayNowQR:
         qr.add_data(payload)
         qr.make(fit=True)
 
-        img = qr.make_image(fill_color="purple", back_color="white").convert('RGB')
+        img = qr.make_image(fill_color="purple", back_color="white").convert("RGB")
 
-        logo = Image.open('./paynowqr/paynow-logo.png')
+        logo = Image.open("paynow-logo.png")
         logo = logo.resize((1000, 450), Image.LANCZOS)
 
         img_w, img_h = img.size
-        expanded_img = ImageOps.expand(img, border=(img_w // 5, img_h // 5), fill='white')
+        expanded_img = ImageOps.expand(
+            img, border=(img_w // 5, img_h // 5), fill="white"
+        )
 
         pos = ((expanded_img.size[0] - logo.size[0]) // 2, expanded_img.size[1] - 320)
         expanded_img.paste(logo, pos, logo)
