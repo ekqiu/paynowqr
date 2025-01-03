@@ -27,6 +27,8 @@ qr.save("paynow_business.png")
 3. **Name**: Name of the account holder or business.
 4. **Amount**: Amount to be paid.
 5. **Description**: Description of the payment.
+6. **Expiry Date (Optional)**: Expiry date of the QR code. Default is None. Format is "YYYYMMDD".
+7. **QR Code Colour (Optional)**: Colour of the QR code. Default is "purple".
 
 ## Output
 The above code will generate two QR codes, one for personal account and one for business account. The QR code will be saved as `paynow_personal.png` and `paynow_business.png` respectively.
